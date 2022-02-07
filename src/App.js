@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './views/Home';
+import Navbar from './components/NavBar';
+import Posts from './views/Posts';
+import Register from './views/Register';
+import Login from './Login';
+import PostUpdate from './components/PostUpdate';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  
+  constructor(props){
+    super(props);
+    this.state = {
+        name: 'Melissa',
+        loggedIn: localStorage.getItem('token')
+    }
 }
 
-export default App;
+  logIn = (token) => {
+    this.setState({
+        loggedIn: token
+    })
+  }
+
+  logOut = () =>{
+    localStorage.removeItem('token');
+    this.setState({
+        loggedIn: null
+    })
+  }
+
+
+  render() {
+    return (
+        <>
+            <Navbar loggedIn={this.state.loggedIn}/>
+            <div className='container'>
+                <Routes>
+                    <Route path="/" element={<Home/>} />
+                    <Route path="register" element={<Register /> } />
+                    <Route path="login" element={<Login  logUserIn={this.logIn}/> } />
+                    <Route path="posts" element={<Posts /> } />
+                    <Route path="posts/:postId" element={<PostUpdate token={this.state.loggedIn}/> } />
+          
+                    
+                </Routes>
+                
+            </div>
+        </>
+
+    );
+  }
+}
+
